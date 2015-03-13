@@ -25,4 +25,10 @@ bootstrapSandbox _ _ _ localBuildInfo = do
   setCurrentDirectory sandboxDir
   callCommand "wget http://www.stackage.org/snapshot/lts-1.11/cabal.config?download=true -O cabal.config"
   callCommand "cabal sandbox init"
-  callCommand "cabal install tagged -j1"
+  callCommand ("cabal install " ++ unwords packages)
+
+packages :: [String]
+packages =
+  "tagged" :
+  "temporary" :
+  []

@@ -11,7 +11,7 @@ import           Test.Hspec
 spec :: Spec
 spec = do
   describe "runstaskell" $ do
-    forM_ ["01", "02"] $ \ number -> do
+    forM_ ["01", "02", "03"] $ \ number -> do
       let scriptFile = "test" </> number <.> "hs"
       it ("executes " ++ scriptFile) $ do
         path <- getEnv "PATH"
