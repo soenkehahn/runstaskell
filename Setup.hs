@@ -23,6 +23,6 @@ bootstrapSandbox _ _ _ localBuildInfo = do
     removeDirectoryRecursive sandboxDir
   createDirectoryIfMissing True sandboxDir
   setCurrentDirectory sandboxDir
-  callCommand "tree"
+  callCommand "wget http://www.stackage.org/snapshot/lts-1.11/cabal.config?download=true -O cabal.config"
   callCommand "cabal sandbox init"
   callCommand "cabal install tagged -j1"
