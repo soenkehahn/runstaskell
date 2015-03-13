@@ -1,23 +1,26 @@
 
-import           Control.Exception
 import           Control.Monad
+import           Distribution.PackageDescription
 import           Distribution.Simple
 import           Distribution.Simple.LocalBuildInfo
+import           Distribution.Simple.Setup
 import           System.Directory
 import           System.FilePath
 import           System.IO
 import           System.Process
 
+main :: IO ()
 main = defaultMainWithHooks simpleUserHooks{
   postCopy = bootstrapSandbox
 }
 
-bootstrapSandbox _ _ _ localBuildInfo = do
-  hPutStrLn stderr "bootstrapping staskell packages..."
-  let dataDir =
-        (fromPathTemplate $ datadir $ installDirTemplates localBuildInfo) </>
-        (fromPathTemplate $ datasubdir $ installDirTemplates localBuildInfo)
+bootstrapSandbox :: Args -> CopyFlags -> PackageDescription -> LocalBuildInfo -> IO ()
+bootstrapSandbox _ copyFlags pd localBuildInfo = do
+  let paths :: InstallDirs FilePath
+      paths = absoluteInstallDirs pd localBuildInfo (fromFlag $ copyDest copyFlags)
+      dataDir = datadir paths
       sandboxDir = dataDir </> "sandbox"
+  hPutStrLn stderr ("bootstrapping staskell packages into " ++ sandboxDir ++ "...")
   exists <- doesDirectoryExist sandboxDir
   when exists $
     removeDirectoryRecursive sandboxDir

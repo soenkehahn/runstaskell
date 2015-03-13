@@ -1,6 +1,6 @@
 name: runstaskell
 version: 0.1
-cabal-version: >= 1.2
+cabal-version: >= 1.22
 license: BSD3
 license-file: LICENSE
 author: Renhui Shen, Sönke Hahn
@@ -13,6 +13,8 @@ executable runstaskell
     Main.hs
   hs-source-dirs:
     src
+  default-language:
+    Haskell2010
   ghc-options:
     -Wall -threaded -fno-warn-name-shadowing
   build-depends:
@@ -23,10 +25,12 @@ executable runstaskell
 test-suite spec
   type:
     exitcode-stdio-1.0
-  ghc-options:
-    -Wall -threaded -fno-warn-name-shadowing -O0
   hs-source-dirs:
     src, test
+  default-language:
+    Haskell2010
+  ghc-options:
+    -Wall -threaded -fno-warn-name-shadowing -O0
   main-is:
     Spec.hs
   build-depends:
