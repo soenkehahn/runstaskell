@@ -29,6 +29,31 @@ bootstrapSandbox _ _ _ localBuildInfo = do
 
 packages :: [String]
 packages =
+  "aeson" :
+  "base-compat" :
+  "case-insensitive" :
+  "cassava" :
+  "cmdArgs" :
+  "containers" :
+  "deepseq" :
+  "directory" :
+  "directory-tree" :
+  "either" :
+  "enclosed-exceptions" :
+  "errors" :
+  "filepath" :
+  "http-client" :
+  "mime-mail" :
+  "mtl" :
+  "optparse-applicative" :
+  "process" :
+  "safe" :
+  "shell-conduit" :
+  "shelly" :
+  "silently" :
+  "string-conversions" :
   "tagged" :
   "temporary" :
+  "transformers" :
+  "yaml" :
   []
