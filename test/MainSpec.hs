@@ -15,6 +15,6 @@ spec = do
       let scriptFile = "test" </> number <.> "hs"
       it ("executes " ++ scriptFile) $ do
         path <- getEnv "PATH"
-        setEnv "PATH" ("./test/fake-bin:" ++ path)
+        setEnv "PATH" ("./.cabal-sandbox/bin:" ++ path)
         output <- capture_ $ callCommand scriptFile
         output `shouldContain` (number ++ "-success")
