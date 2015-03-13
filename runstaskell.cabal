@@ -1,0 +1,36 @@
+name: runstaskell
+version: 0.1
+cabal-version: >= 1.2
+license: BSD3
+license-file: LICENSE
+author: Renhui Shen, Sönke Hahn
+copyright: Zalora South East Asia Pte Ltd
+maintainer: soenke.hahn@zalora.com
+build-type: Simple
+
+executable runstaskell
+  main-is:
+    Main.hs
+  hs-source-dirs:
+    src
+  ghc-options:
+    -Wall -threaded -fno-warn-name-shadowing
+  build-depends:
+      base == 4.*
+    , process
+
+test-suite spec
+  type:
+    exitcode-stdio-1.0
+  ghc-options:
+    -Wall -threaded -fno-warn-name-shadowing -O0
+  hs-source-dirs:
+    src, test
+  main-is:
+    Spec.hs
+  build-depends:
+      base == 4.*
+
+    , hspec
+    , silently
+    , filepath
