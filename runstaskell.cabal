@@ -1,40 +1,50 @@
 name: runstaskell
 version: 0.1
-cabal-version: >= 1.22
+cabal-version: >= 1.2
 license: BSD3
 license-file: LICENSE
 author: Renhui Shen, Sönke Hahn
 copyright: Zalora South East Asia Pte Ltd
 maintainer: soenke.hahn@zalora.com
-build-type: Custom
+build-type: Simple
 
-executable runstaskell
+executable staskell-bootstrap
   main-is:
-    Main.hs
+    BootstrapMain.hs
   hs-source-dirs:
     src
-  default-language:
-    Haskell2010
   ghc-options:
     -Wall -threaded -fno-warn-name-shadowing
   build-depends:
       base == 4.*
+    , directory
+    , unix
     , process
+    , containers
     , filepath
+
+executable runstaskell
+  main-is:
+    RunstaskellMain.hs
+  hs-source-dirs:
+    src
+  ghc-options:
+    -Wall -threaded -fno-warn-name-shadowing
+  build-depends:
+      base == 4.*
 
 test-suite spec
   type:
     exitcode-stdio-1.0
   hs-source-dirs:
     src, test
-  default-language:
-    Haskell2010
   ghc-options:
     -Wall -threaded -fno-warn-name-shadowing -O0
   main-is:
     Spec.hs
   build-depends:
       base == 4.*
+
     , hspec
     , silently
-    , filepath
+    , temporary
