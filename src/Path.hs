@@ -5,7 +5,7 @@ module Path where
 import           Data.String
 import           System.FilePath
 
-data PackageSetName = PackageSetName String
+data PackageSetName = PackageSetName {fromPackageSetName :: String}
   deriving (Eq, Ord, Show)
 
 instance IsString PackageSetName where

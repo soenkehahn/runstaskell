@@ -1,18 +1,24 @@
-{-# LANGUAGE  OverloadedStrings #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module PackageSets where
 
-import           Data.Map        hiding (map)
+import           Data.Map       hiding (map)
+import           System.Process
 
 import           Path
 
 data PackageSet
   = PackageSet {
     cabalConfig :: [(String, String)]
-   }
+  }
+  | StackageConfigFile {
+    cabalConfigUrl :: String,
+    packages :: [String]
+  }
 
 packageNames :: PackageSet -> [String]
 packageNames (PackageSet cabalConfig) = map fst cabalConfig
+packageNames (StackageConfigFile _ names) = names
 
 writeCabalConfig :: Path Sandbox -> PackageSet -> IO ()
 writeCabalConfig sandboxDir (PackageSet cabalConfig) = do
@@ -20,25 +26,31 @@ writeCabalConfig sandboxDir (PackageSet cabalConfig) = do
     "constraints:" :
     map (\ (package, version) -> "  " ++ package ++ " == " ++ version)
         cabalConfig
+writeCabalConfig sandboxDir (StackageConfigFile url _) = do
+  callCommand ("wget '" ++ url ++ "' -O " ++ toPath (getCabalConfig sandboxDir))
 
 
 -- * package set definitions
 
-getPackageSet :: PackageSetName -> PackageSet
-getPackageSet "test" = packageSets ! "test"
-getPackageSet _ = undefined
+getPackageSet :: PackageSetName -> Either String PackageSet
+getPackageSet name = maybe
+  (Left ("unknown package set: " ++ fromPackageSetName name))
+  Right
+  (Data.Map.lookup name packageSets)
 
 packageSets :: Map PackageSetName PackageSet
 packageSets = fromList $
   ("test", PackageSet [("tagged", "0.7")]) :
+  ("1.11", StackageConfigFile
+    "http://www.stackage.org/snapshot/lts-1.11/cabal.config?download=true"
+    stackagePackages) :
   []
 
 latest :: PackageSetName
-latest = "test"
+latest = "1.11"
 
-{-
-packages :: [String]
-packages =
+stackagePackages :: [String]
+stackagePackages =
   "aeson" :
   "base-compat" :
   "case-insensitive" :
@@ -58,8 +70,6 @@ packages =
   "optparse-applicative" :
   "process" :
   "safe" :
-  "shell-conduit" :
-  "shelly" :
   "silently" :
   "string-conversions" :
   "tagged" :
@@ -67,4 +77,3 @@ packages =
   "transformers" :
   "yaml" :
   []
--}
