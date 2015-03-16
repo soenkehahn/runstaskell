@@ -41,7 +41,7 @@ getPackageSet name = maybe
 packageSets :: Map PackageSetName PackageSet
 packageSets = fromList $
   ("test", PackageSet [("tagged", "0.7")]) :
-  ("1.11", StackageConfigFile
+  ("rc-1.11", StackageConfigFile
     "http://www.stackage.org/snapshot/lts-1.11/cabal.config"
     stackagePackages) :
   []
