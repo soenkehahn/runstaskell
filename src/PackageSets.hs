@@ -42,7 +42,7 @@ packageSets :: Map PackageSetName PackageSet
 packageSets = fromList $
   ("test", PackageSet [("tagged", "0.7")]) :
   ("1.11", StackageConfigFile
-    "http://www.stackage.org/snapshot/lts-1.11/cabal.config?download=true"
+    "http://www.stackage.org/snapshot/lts-1.11/cabal.config"
     stackagePackages) :
   []
 
