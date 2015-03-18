@@ -22,11 +22,13 @@ this says two things:
 
 ## todos
 
+- put list of packages in a file
+- add `-rc` or somesuch to the package name to mark it as release candidates
+- figure out stability of stackage lts releases
+- figure out which packages to include
 - document how runstaskell uses stackage
 - run bootstrapping through cabal install?
 - implement proper command line parsing
   - --version
   - --help
   - --list-package-sets
-- figure out which packages to include
-- figure out stability of stackage lts releases
