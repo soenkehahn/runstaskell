@@ -76,4 +76,5 @@ stackagePackages =
   "temporary" :
   "transformers" :
   "yaml" :
+  "hspec" :
   []

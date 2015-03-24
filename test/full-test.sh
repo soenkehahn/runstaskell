@@ -21,3 +21,5 @@ runstaskell --list
 
 runstaskell-rc-1.11 test/03.hs
 runstaskell test/03.hs
+
+runstaskell-rc-1.11 test/04.hs
