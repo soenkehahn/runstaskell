@@ -47,7 +47,7 @@ packageSets = fromList $
   []
 
 latest :: PackageSetName
-latest = "1.11"
+latest = "rc-1.11"
 
 stackagePackages :: [String]
 stackagePackages =
