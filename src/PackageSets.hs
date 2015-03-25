@@ -1,8 +1,10 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TupleSections     #-}
 
 module PackageSets where
 
 import           Data.Map       hiding (map)
+import           Data.String
 import           System.Process
 
 import           Path
@@ -15,6 +17,7 @@ data PackageSet
     cabalConfigUrl :: String,
     packages :: [String]
   }
+  deriving (Show)
 
 packageNames :: PackageSet -> [String]
 packageNames (PackageSet cabalConfig) = map fst cabalConfig
@@ -41,13 +44,24 @@ getPackageSet name = maybe
 packageSets :: Map PackageSetName PackageSet
 packageSets = fromList $
   ("test", PackageSet [("tagged", "0.7")]) :
-  ("rc-1.11", StackageConfigFile
-    "http://www.stackage.org/snapshot/lts-1.11/cabal.config"
-    stackagePackages) :
+  map
+    (\ version ->
+      (fromString ("rc-" ++ showVersion version),
+       StackageConfigFile
+         ("http://www.stackage.org/snapshot/lts-" ++ showVersion version ++ "/cabal.config")
+         stackagePackages))
+    ltsVersions ++
   []
 
 latest :: PackageSetName
-latest = "rc-1.11"
+latest = fromString ("rc-" ++ showVersion (maximum ltsVersions))
+
+showVersion :: (Int, Int) -> String
+showVersion (a, b) = show a ++ "." ++ show b
+
+ltsVersions :: [(Int, Int)]
+ltsVersions =
+  map (1,) [1 .. 14]
 
 stackagePackages :: [String]
 stackagePackages =

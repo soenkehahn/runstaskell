@@ -15,11 +15,11 @@ runstaskell-test --list
 runstaskell-test test/01.hs
 runstaskell-test test/02.hs
 
-staskell-bootstrap rc-1.11
+staskell-bootstrap rc-1.14
 
 runstaskell --list
 
-runstaskell-rc-1.11 test/03.hs
+runstaskell-rc-1.14 test/03.hs
 runstaskell test/03.hs
 
-runstaskell-rc-1.11 test/04.hs
+runstaskell-rc-1.14 test/04.hs
