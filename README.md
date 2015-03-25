@@ -16,18 +16,24 @@ this says two things:
 - This script does *not* depend on any packages that are not included in the
   staskell set (or shipped with ghc).
 
+Usually you probably want to fix the major part of the version of LTS, but not the minor part, e.g.:
+``` haskell
+#!/usr/bin/env runstaskell-1
+```
+See https://github.com/fpco/lts-haskell#readme for more information on the stability of LTS.
+
 ## status
 
 `runstaskell` is not even experimental yet. Don't use it!
 
 ## todos
 
+- make `runstaskell-rc-1` work.
 - put list of packages in a file
-- add `-rc` or somesuch to the package name to mark it as release candidates
-- figure out stability of stackage lts releases
 - figure out which packages to include
 - document how runstaskell uses stackage
-- run bootstrapping through cabal install?
+- implement partial versions (runstaskell-1)
+- run bootstrapping through cabal install (through the Setup.hs script)?
 - implement proper command line parsing
   - --version
   - --help
