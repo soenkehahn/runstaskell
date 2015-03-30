@@ -23,6 +23,8 @@ executable staskell-bootstrap
     , containers
     , filepath
     , base-compat
+    , getopt-generics
+    , generics-sop
 
 executable runstaskell
   main-is:

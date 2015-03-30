@@ -25,7 +25,7 @@ spec = do
         output <- capture_ $ callCommand "cabal exec ghc-pkg list"
         output `shouldContain` "tagged-0.7"
 
-    it "throws an exception on unknow package sets" $ do
+    it "throws an exception on unknown package sets" $ do
       (withBootstrapped "foo" $ const $ return ())
         `shouldThrow` anyException
 
@@ -33,6 +33,17 @@ spec = do
       withBootstrapped "test" $ \ prefix -> do
         readSymbolicLink (prefix </> "bin" </> "runstaskell-test")
           `shouldReturn` (prefix </> "bin" </> "runstaskell")
+
+  describe "run" $ do
+
+    it "supports --help" $ do
+      output <- capture_ $ withArgs ["--help"] run
+      output `shouldContain` "--bootstrap="
+
+    it "supports --list" $ do
+      output <- capture_ $ withArgs ["--list"] run
+      output `shouldContain` "test"
+      output `shouldContain` "rc-1.14"
 
 withBootstrapped :: PackageSetName -> (FilePath -> IO ()) -> IO ()
 withBootstrapped packageSetName action = do
@@ -45,7 +56,7 @@ withBootstrapped packageSetName action = do
     createDirectoryIfMissing True (prefix </> "bin")
     writeFile (prefix </> "bin" </> "runstaskell") ""
     let sandboxes = Path (prefix </> "sandboxes")
-    bootstrap
+    runBootstrap
       (Path (prefix </> "bin") :: Path Bin)
       sandboxes
       packageSetName
