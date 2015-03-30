@@ -13,3 +13,4 @@ install:
 script:
   - cabal install --ghc-options=-Werror -j1
   - cabal test
+  - ./test/full-test.sh
