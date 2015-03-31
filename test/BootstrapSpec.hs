@@ -1,4 +1,5 @@
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE OverloadedStrings   #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 
 module BootstrapSpec where
 
@@ -14,42 +15,34 @@ import           Test.Hspec
 
 import           Bootstrap
 import           Path
+import           Sandboxes
 
 spec :: Spec
 spec = do
   describe "bootstrap" $ do
     it "bootstraps the test package set" $
-      withBootstrapped "test" $ \ prefix -> do
-        cabalConfig <- readFile (prefix </> "sandboxes" </> "test" </> "cabal.config")
+      withBootstrapped "test" $ \ _ dataDir -> do
+        cabalConfig <- readFile (toPath (getSandboxes dataDir) </> "test" </> "cabal.config")
         cabalConfig `shouldContain` "tagged == 0.7"
-        setCurrentDirectory (prefix </> "sandboxes" </> "test")
+        setCurrentDirectory (toPath (getSandboxes dataDir) </> "test")
         output <- capture_ $ callCommand "cabal exec ghc-pkg list"
         output `shouldContain` "tagged-0.7"
 
     it "throws an exception on unknown package sets" $ do
-      (withBootstrapped "foo" $ const $ return ())
+      (withBootstrapped "foo" $ \ _ _ -> return ())
         `shouldThrow` anyException
 
     it "creates a link in bindir" $ do
-      withBootstrapped "test" $ \ prefix -> do
-        readSymbolicLink (prefix </> "bin" </> "runstaskell-test")
-          `shouldReturn` (prefix </> "bin" </> "runstaskell")
+      withBootstrapped "test" $ \ (binDir :: Path Bin) _ -> do
+        readSymbolicLink (toPath binDir </> "runstaskell-test")
+          `shouldReturn` (toPath binDir </> "runstaskell")
 
-  describe "run" $ do
-
-    it "supports --help" $ do
-      output <- capture_ $ withArgs ["--help"] run
-      output `shouldContain` "--bootstrap="
-
-    it "supports --list" $ do
-      output <- capture_ $ withArgs ["--list"] run
-      output `shouldContain` "test"
-      output `shouldContain` "rc-1.14"
-
-withBootstrapped :: PackageSetName -> (FilePath -> IO ()) -> IO ()
+withBootstrapped :: PackageSetName -> (Path Bin -> Path Data -> IO ()) -> IO ()
 withBootstrapped packageSetName action = do
   withSystemTempDirectory "runstaskell-test" $ \ prefix ->
     protectCurrentDirectory $ do
+      let binDir :: Path Bin = Path (prefix </> "bin")
+          dataDir :: Path Data = Path (prefix </> "data")
       mapM_ unsetEnv $
         "CABAL_SANDBOX_CONFIG" :
         "CABAL_SANDBOX_PACKAGE_PATH" :
@@ -57,12 +50,11 @@ withBootstrapped packageSetName action = do
         []
       createDirectoryIfMissing True (prefix </> "bin")
       writeFile (prefix </> "bin" </> "runstaskell") ""
-      let sandboxes = Path (prefix </> "sandboxes")
       runBootstrap
         (Path (prefix </> "bin") :: Path Bin)
-        sandboxes
+        (getSandboxes dataDir)
         packageSetName
-      action prefix
+      action binDir dataDir
 
 protectCurrentDirectory :: IO a -> IO a
 protectCurrentDirectory =

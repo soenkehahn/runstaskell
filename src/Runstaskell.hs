@@ -1,35 +1,33 @@
-{-# LANGUAGE ScopedTypeVariables, ViewPatterns #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE ViewPatterns        #-}
 
 module Runstaskell where
 
 import           Data.List
 import           Data.String
-import           System.Environment  (getArgs, setEnv)
+import           System.Environment (setEnv)
 import           System.FilePath
 import           System.Process
 
-import           Main.Utils
 import           PackageSets
 import           Path
+import           Sandboxes
 
-run :: IO ()
+{- run :: IO ()
 run = do
   progName <- getProgName
   sandboxes <- getSandboxes
   args <- getArgs
-  runstaskell progName sandboxes args
+  runstaskell progName sandboxes args -}
 
-runstaskell :: Path ProgName -> Path Sandboxes -> [String] -> IO ()
-runstaskell progName sandboxes args = do
+runScript :: Path ProgName -> Path Sandboxes -> Path Script -> [String] -> IO ()
+runScript progName sandboxes script args = do
   let packageSetName = getPackageNameSetFromProgName progName
       sandbox = getSandbox sandboxes packageSetName
       sandboxConfig = getCabalSandboxConfig sandbox
   setEnv "CABAL_SANDBOX_CONFIG" (toPath sandboxConfig)
-  case args of
-    ["--list"] -> callCommand "cabal exec -- ghc-pkg list"
-    (script : args) -> callCommand
-      ("cabal exec -- runhaskell " ++ script ++ " " ++ unwords args)
-    _ -> undefined
+  callCommand
+    ("cabal exec -- runhaskell " ++ toPath script ++ " " ++ unwords args)
 
 getPackageNameSetFromProgName :: Path ProgName -> PackageSetName
 getPackageNameSetFromProgName (Path (takeFileName -> p))

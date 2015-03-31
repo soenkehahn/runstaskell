@@ -8,33 +8,21 @@ copyright: Zalora South East Asia Pte Ltd
 maintainer: soenke.hahn@zalora.com
 build-type: Simple
 
-executable staskell-bootstrap
-  main-is:
-    BootstrapMain.hs
-  hs-source-dirs:
-    src
-  ghc-options:
-    -Wall -threaded -fno-warn-name-shadowing
-  build-depends:
-      base == 4.*
-    , directory
-    , unix
-    , process
-    , containers
-    , filepath
-    , base-compat
-    , getopt-generics
-    , generics-sop
-
 executable runstaskell
   main-is:
-    RunstaskellMain.hs
+    Main.hs
   hs-source-dirs:
     src
   ghc-options:
     -Wall -threaded -fno-warn-name-shadowing
   build-depends:
       base == 4.*
+    , containers
+    , process
+    , filepath
+    , directory
+    , base-compat
+    , unix
 
 test-suite spec
   type:
@@ -47,7 +35,14 @@ test-suite spec
     Spec.hs
   build-depends:
       base == 4.*
+    , containers
+    , process
+    , filepath
+    , directory
+    , base-compat
+    , unix
 
     , hspec
     , silently
     , temporary
+    , QuickCheck

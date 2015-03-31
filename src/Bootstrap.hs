@@ -1,12 +1,10 @@
 {-# LANGUAGE DeriveGeneric       #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
-module Bootstrap (run, runBootstrap) where
+{-# OPTIONS_GHC -fno-warn-unused-binds #-}
 
-import           Data.Map                       (keys)
-import           Generics.SOP
-import qualified GHC.Generics
-import           System.Console.GetOpt.Generics
+module Bootstrap (runBootstrap) where
+
 import           System.Directory
 import           System.Environment
 import           System.Exit.Compat
@@ -14,31 +12,9 @@ import           System.FilePath
 import           System.Posix.Files
 import           System.Process
 
-import           Main.Utils
 import           PackageSets
 import           Path
-
-data Options
-  = Options {
-    bootstrap :: Maybe String,
-    list :: Bool
-  }
-  deriving (GHC.Generics.Generic)
-
-instance Generic Options
-instance HasDatatypeInfo Options
-
-run :: IO ()
-run = withArguments $ \ options -> case options of
-  (Options{list = True}) -> listPackageSets
-  (Options{bootstrap = Just packageSetName}) -> do
-    binDir :: Path Bin <- getBinDir
-    sandboxes <- getSandboxes
-    runBootstrap binDir sandboxes (PackageSetName packageSetName)
-  _ -> die "missing option: --bootstrap=string"
-
-listPackageSets :: IO ()
-listPackageSets = mapM_ putStrLn $ map fromPackageSetName $ keys packageSets
+import           Sandboxes
 
 runBootstrap :: Path Bin -> Path Sandboxes -> PackageSetName -> IO ()
 runBootstrap binDir sandboxesDir packageSetName = do
