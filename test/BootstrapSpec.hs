@@ -2,6 +2,7 @@
 
 module BootstrapSpec where
 
+import           Control.Exception
 import           System.Directory
 import           System.Environment
 import           System.FilePath
@@ -47,17 +48,22 @@ spec = do
 
 withBootstrapped :: PackageSetName -> (FilePath -> IO ()) -> IO ()
 withBootstrapped packageSetName action = do
-  withSystemTempDirectory "runstaskell-test" $ \ prefix -> do
-    mapM_ unsetEnv $
-      "CABAL_SANDBOX_CONFIG" :
-      "CABAL_SANDBOX_PACKAGE_PATH" :
-      "GHC_PACKAGE_PATH" :
-      []
-    createDirectoryIfMissing True (prefix </> "bin")
-    writeFile (prefix </> "bin" </> "runstaskell") ""
-    let sandboxes = Path (prefix </> "sandboxes")
-    runBootstrap
-      (Path (prefix </> "bin") :: Path Bin)
-      sandboxes
-      packageSetName
-    action prefix
+  withSystemTempDirectory "runstaskell-test" $ \ prefix ->
+    protectCurrentDirectory $ do
+      mapM_ unsetEnv $
+        "CABAL_SANDBOX_CONFIG" :
+        "CABAL_SANDBOX_PACKAGE_PATH" :
+        "GHC_PACKAGE_PATH" :
+        []
+      createDirectoryIfMissing True (prefix </> "bin")
+      writeFile (prefix </> "bin" </> "runstaskell") ""
+      let sandboxes = Path (prefix </> "sandboxes")
+      runBootstrap
+        (Path (prefix </> "bin") :: Path Bin)
+        sandboxes
+        packageSetName
+      action prefix
+
+protectCurrentDirectory :: IO a -> IO a
+protectCurrentDirectory =
+  bracket getCurrentDirectory setCurrentDirectory . const
