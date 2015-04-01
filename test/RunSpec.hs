@@ -18,6 +18,10 @@ spec = do
       let (Help message) = parseOptions (Path "prog") ["--help"]
       message `shouldContain` "--bootstrap PACKAGE_SET"
 
+    it "supports --help when invoking with invalid options/arguments" $ do
+      let (Help message) = parseOptions (Path "prog") ["--foo", "bar", "--help"]
+      message `shouldContain` "--bootstrap PACKAGE_SET"
+
     it "supports --list-available" $ do
       parseOptions (Path "prog") ["--list-installable"] `shouldBe` ListInstallable
 
@@ -30,6 +34,10 @@ spec = do
     it "supports arbitrary arguments for scripts" $ do
       property $ \ args -> parseOptions (Path "prog") ("./script.hs" : args) `shouldBe`
         RunScript (Path "./script.hs") args
+
+    it "supports --help argument for scripts" $ do
+      let (RunScript _ args) = parseOptions (Path "prog") ["./script.hs", "--help"]
+      args `shouldBe` ["--help"]
 
     it "complains about invalid options" $ do
       parseOptions (Path "prog") ["--invalid", "bla"] `shouldBe`
