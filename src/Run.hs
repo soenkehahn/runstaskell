@@ -40,11 +40,10 @@ data Options
 
 parseOptions :: Path ProgName -> [String] -> Options
 parseOptions progName args = case args of
-  ["--help"] -> Help (helpText progName)
+  (arg : _) | "-" `isPrefixOf` arg && "--help" `elem` args -> Help (helpText progName)
   ["--list-installable"] -> ListInstallable
   ["--list-bootstrapped"] -> ListBootstrapped
   ["--bootstrap", packageSetName] -> Bootstrap $ PackageSetName packageSetName
-  (invalid : invalids) | "-" `isPrefixOf` invalid && "--help" `elem` invalids -> Help (helpText progName)
   (invalid : _) | "-" `isPrefixOf` invalid -> Error ("invalid option: " ++ invalid)
   (script : args) -> RunScript (Path script :: Path Script) args
   [] -> Help (helpText progName)

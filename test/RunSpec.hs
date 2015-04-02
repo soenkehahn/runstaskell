@@ -20,6 +20,8 @@ spec = do
 
     it "supports --help when invoking with invalid options/arguments" $ do
       let (Help message) = parseOptions (Path "prog") ["--foo", "bar", "--help"]
+          (Help otherMessage) = parseOptions (Path "prog") ["--help", "bar", "baz"]
+      message `shouldBe` otherMessage
       message `shouldContain` "--bootstrap PACKAGE_SET"
 
     it "supports --list-available" $ do

@@ -61,21 +61,21 @@ spec = do
       withBootstrappedScript stdoutCode $ \executable sandboxes scriptPath -> do
         output <- hCapture_ [stdout] $
           runScript executable sandboxes scriptPath []
-        output `shouldContain` "this goes to stdout"
+        output `shouldBe` "this goes to stdout\n"
 
     it "inherits stderr and exitcode from running the script" $ do
       withBootstrappedScript stderrCode $ \executable sandboxes scriptPath -> do
         output <- hCapture_ [stderr] $
           runScript executable sandboxes scriptPath []
             `catch` \e ->  e `shouldBe` ExitFailure 23
-        output `shouldContain` "this goes to stderr"
+        output `shouldBe` "this goes to stderr\n"
 
     it "passes arguments to the running script" $ do
       withBootstrappedScript argsCode $ \executable sandboxes scriptPath -> do
+        let args = ["arg1", "arg2"]
         output <- hCapture_ [stdout] $
-          runScript executable sandboxes scriptPath ["arg1", "arg2"]
-        output `shouldContain` "arg1"
-        output `shouldContain` "arg2"
+          runScript executable sandboxes scriptPath args
+        output `shouldBe` (show args ++ "\n")
 
 withBootstrappedScript :: String
                        -> (Path ProgName -> Path Sandboxes -> Path Script -> IO ())
