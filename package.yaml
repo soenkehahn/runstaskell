@@ -1,0 +1,35 @@
+name: runstaskell
+version: "0.1"
+author: Renhui Shen, Sönke Hahn
+maintainer: soenke.hahn@zalora.com
+copyright: Zalora South East Asia Pte Ltd
+license: BSD3
+
+ghc-options: -Wall -threaded -fno-warn-name-shadowing
+
+dependencies:
+  - base == 4.*
+  - base-compat
+  - containers
+  - directory
+  - filepath
+  - process
+  - unix
+
+executables:
+  runstaskell:
+    main: Main.hs
+    source-dirs: src
+
+tests:
+  spec:
+    ghc-options: -O0
+    main: Spec.hs
+    source-dirs:
+      - test
+      - src
+    dependencies:
+      - hspec
+      - silently
+      - temporary
+      - QuickCheck
