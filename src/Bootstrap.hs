@@ -25,7 +25,7 @@ runBootstrap binDir sandboxesDir packageSetName = do
   callCommand "cabal sandbox init"
   writeCabalConfig sandboxDir packageSet
   setEnv "CABAL_SANDBOX_CONFIG" (toPath $ getCabalSandboxConfig sandboxDir)
-  callCommand ("cabal install " ++ unwords (packageNames packageSet))
+  callCommand ("cabal install --force-reinstalls " ++ unwords (packageNames packageSet))
   createSymbolicLink
     (toPath binDir </> "runstaskell")
     (toPath $ mkProgramLink binDir packageSetName)
