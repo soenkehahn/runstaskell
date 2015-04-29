@@ -14,6 +14,7 @@ dependencies:
   - directory
   - filepath
   - process
+  - template-haskell
   - unix
 
 executables:

@@ -37,12 +37,12 @@ spec = do
         readSymbolicLink (toPath binDir </> "runstaskell-test")
           `shouldReturn` (toPath binDir </> "runstaskell")
 
-withBootstrapped :: PackageSetName -> (Path Bin -> Path Data -> IO ()) -> IO ()
+withBootstrapped :: PackageSetName -> (Path Bin -> Path DataDir -> IO ()) -> IO ()
 withBootstrapped packageSetName action = do
   withSystemTempDirectory "runstaskell-test" $ \ prefix ->
     protectCurrentDirectory $ do
       let binDir :: Path Bin = Path (prefix </> "bin")
-          dataDir :: Path Data = Path (prefix </> "data")
+          dataDir :: Path DataDir = Path (prefix </> "data")
       mapM_ unsetEnv $
         "CABAL_SANDBOX_CONFIG" :
         "CABAL_SANDBOX_PACKAGE_PATH" :

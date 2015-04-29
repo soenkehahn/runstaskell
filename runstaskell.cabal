@@ -17,6 +17,7 @@ executable runstaskell
   main-is: Main.hs
   other-modules:
       Bootstrap
+      PackageSets.Types
       PackageSets
       Path
       Run
@@ -29,6 +30,7 @@ executable runstaskell
     , directory
     , filepath
     , process
+    , template-haskell
     , unix
   ghc-options: -Wall -threaded -fno-warn-name-shadowing
   default-language: Haskell2010
@@ -39,10 +41,12 @@ test-suite spec
   main-is: Spec.hs
   other-modules:
       BootstrapSpec
+      PackageSetsSpec
       RunSpec
       RunstaskellSpec
       Bootstrap
       Main
+      PackageSets.Types
       PackageSets
       Path
       Run
@@ -55,6 +59,7 @@ test-suite spec
     , directory
     , filepath
     , process
+    , template-haskell
     , unix
 
     , hspec

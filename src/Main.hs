@@ -16,7 +16,7 @@ getBinDir = Path <$> Paths_runstaskell.getBinDir
 getProgName :: IO (Path ProgName)
 getProgName = Path <$> System.Environment.getProgName
 
-getDataDir :: IO (Path Data)
+getDataDir :: IO (Path DataDir)
 getDataDir = Path <$> Paths_runstaskell.getDataDir
 
 main :: IO ()

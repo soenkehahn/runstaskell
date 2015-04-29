@@ -1,12 +1,14 @@
-{-# LANGUAGE EmptyDataDecls #-}
+{-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE EmptyDataDecls     #-}
 
 module Path where
 
+import           Data.Data
 import           Data.String
 import           System.FilePath
 
 data PackageSetName = PackageSetName {fromPackageSetName :: String}
-  deriving (Eq, Ord, Show)
+  deriving (Eq, Ord, Show, Typeable, Data)
 
 instance IsString PackageSetName where
   fromString = PackageSetName
@@ -20,7 +22,7 @@ data CabalSandboxConfig
 data Bin
 data Link
 data ProgName
-data Data
+data DataDir
 data Script
 
 getCabalConfig :: Path Sandbox -> Path CabalConfig

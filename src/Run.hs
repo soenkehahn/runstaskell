@@ -15,7 +15,7 @@ import           Path
 import           Runstaskell
 import           Sandboxes
 
-run :: Path ProgName -> Path Bin -> Path Data -> IO ()
+run :: Path ProgName -> Path Bin -> Path DataDir -> IO ()
 run progName binDir dataDir = do
   args <- getArgs
   case parseOptions progName args of
@@ -74,7 +74,7 @@ runError message = do
 runListInstallable :: IO ()
 runListInstallable = mapM_ putStrLn $ map fromPackageSetName $ keys packageSets
 
-runListBootstrapped :: Path Data -> IO ()
+runListBootstrapped :: Path DataDir -> IO ()
 runListBootstrapped dataDir = do
   bootstrapped <- getBootstrappedSandboxes (getSandboxes dataDir)
   forM_ bootstrapped $ \ sandbox ->

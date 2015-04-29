@@ -1,37 +1,21 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TemplateHaskell   #-}
 {-# LANGUAGE TupleSections     #-}
 
 module PackageSets where
 
-import           Data.Map       hiding (map)
+import           Control.Applicative
+import           Data.List
+import           Data.Map                  hiding (filter, map)
 import           Data.String
-import           System.Process
+import           Data.Traversable
+import           Language.Haskell.TH
+import           Language.Haskell.TH.Quote
+import           System.Directory
+import           System.FilePath
 
+import           PackageSets.Types
 import           Path
-
-data PackageSet
-  = PackageSet {
-    cabalConfig :: [(String, String)]
-  }
-  | StackageConfigFile {
-    cabalConfigUrl :: String,
-    packages :: [String]
-  }
-  deriving (Show)
-
-packageNames :: PackageSet -> [String]
-packageNames (PackageSet cabalConfig) = map fst cabalConfig
-packageNames (StackageConfigFile _ names) = names
-
-writeCabalConfig :: Path Sandbox -> PackageSet -> IO ()
-writeCabalConfig sandboxDir (PackageSet cabalConfig) = do
-  writeFile (toPath $ getCabalConfig sandboxDir) $ unlines $
-    "constraints:" :
-    map (\ (package, version) -> "  " ++ package ++ " == " ++ version)
-        cabalConfig
-writeCabalConfig sandboxDir (StackageConfigFile url _) = do
-  callCommand ("wget '" ++ url ++ "' -O " ++ toPath (getCabalConfig sandboxDir))
-
 
 -- * package set definitions
 
@@ -51,6 +35,7 @@ packageSets = fromList $
          ("http://www.stackage.org/snapshot/lts-" ++ showVersion version ++ "/cabal.config")
          stackagePackages))
     ltsVersions ++
+  customPackageSets ++
   []
 
 latest :: PackageSetName
@@ -93,3 +78,16 @@ stackagePackages =
   "yaml" :
   "hspec" :
   []
+
+-- * custom package sets
+
+customPackageSets :: [(PackageSetName, PackageSet)]
+customPackageSets = $(do
+  let customDir = "customPackageSets"
+  files <-
+    filter (not . ("." `isPrefixOf`)) <$>
+    runIO (getDirectoryContents customDir)
+  packageSets <- forM files $ \ file -> do
+    content <- runIO (readFile (customDir </> file))
+    return (PackageSetName file, CustomPackageSet content)
+  dataToExpQ (const Nothing) packageSets)

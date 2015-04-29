@@ -15,7 +15,7 @@ getBootstrappedSandboxes sandboxesDir =
   getDirectoryContents (toPath sandboxesDir)
 
 
-getSandboxes :: Path Data -> Path Sandboxes
+getSandboxes :: Path DataDir -> Path Sandboxes
 getSandboxes dataDir = Path $ (toPath dataDir </> "sandboxes")
 
 getSandbox :: Path Sandboxes -> PackageSetName -> Path Sandbox
