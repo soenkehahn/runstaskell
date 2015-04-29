@@ -61,7 +61,8 @@ showVersion (a, b) = show a ++ "." ++ show b
 
 ltsVersions :: [(Int, Int)]
 ltsVersions =
-  map (1,) [1 .. 15]
+  map (1,) [1 .. 15] ++
+  map (2,) [1 .. 5]
 
 stackagePackages :: [String]
 stackagePackages =
