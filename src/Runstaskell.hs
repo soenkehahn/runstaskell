@@ -27,7 +27,7 @@ runScript progName sandboxes script args = do
   let packageSetName = getPackageNameSetFromProgName progName
       sandbox = getSandbox sandboxes packageSetName
       sandboxConfig = getCabalSandboxConfig sandbox
-      command = "cabal exec -- runhaskell " ++ toPath script ++ " " ++ unwords args
+      command = "cabal exec -- runhaskell -Wall " ++ toPath script ++ " " ++ unwords args
   setEnv "CABAL_SANDBOX_CONFIG" (toPath sandboxConfig)
   exitCode <- system command
   unless (exitCode == ExitSuccess) $ exitWith exitCode

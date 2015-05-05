@@ -40,6 +40,7 @@ spec = do
     let stdoutCode = unlines $
           "import System.Exit" :
           "import System.IO" :
+          "main :: IO ()" :
           "main = do" :
           "  hPutStrLn stdout $ \"this goes to stdout\"" :
           []
@@ -47,6 +48,7 @@ spec = do
         stderrCode = unlines $
           "import System.Exit" :
           "import System.IO" :
+          "main :: IO ()" :
           "main = do" :
           "  hPutStrLn stderr $ \"this goes to stderr\"" :
           "  exitWith $ ExitFailure 23" :
@@ -54,6 +56,7 @@ spec = do
 
         argsCode = unlines $
           "import System.Environment" :
+          "main :: IO ()" :
           "main = getArgs >>= print" :
           []
 
