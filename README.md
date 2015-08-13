@@ -1,3 +1,5 @@
+# *This project is abandoned.*
+
 # runstaskell
 
 `runstaskell` is an interpreter for Haskell programs. It's a thin wrapper
